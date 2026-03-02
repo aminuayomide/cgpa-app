@@ -1,0 +1,62 @@
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #f7f9fb;
+}
+
+.card {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  transition: all 0.2s;
+  border-radius: 0.5rem;
+  border-color: #e5e7eb;
+}
+
+input:focus,
+select:focus {
+  border-color: #059669; /* emerald-600 */
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.5);
+  outline: none;
+}
+
+.course-row input,
+.course-row select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.course-row input:focus,
+.course-row select:focus {
+  outline: none;
+  border-color: #22c55e;
+}
+
+/* Updated Delete Button */
+.delete-btn {
+  background: none;
+  border: none;
+  color: #e74c3c; /* red */
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  transition: color 0.2s;
+}
+
+.delete-btn:hover {
+  color: #c0392b; /* darker red on hover */
+}
+
+/* Optional: make icon centered in the table row */
+.course-row .delete-btn i {
+  pointer-events: none;
+}

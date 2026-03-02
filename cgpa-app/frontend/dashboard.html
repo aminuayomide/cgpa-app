@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GPA & CGPA Generator | AMENSTECH</title>
+
+  <!-- Favicon -->
+  <link
+    rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2L2 7h20L12 2z'/%3E%3Cpath d='M2 7l10 5 10-5v10l-10 5-10-5V7z'/%3E%3C/svg%3E"
+  />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-07KWF8ZXS5"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-07KWF8ZXS5");
+  </script>
+
+  <!-- Tailwind CSS -->
+  <script>
+  tailwind.config = {
+    darkMode: 'class'
+  }
+</script>
+<script src="https://cdn.tailwindcss.com"></script>
+
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="./css/styles.css" />
+  <style>
+      body { font-family: 'Inter', sans-serif; }
+      .card { transition: transform 0.2s; }
+      .card:hover { transform: translateY(-2px); }
+  </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen bg-gray-50 flex flex-col items-center">
+
+<!-- User Session Header -->
+<div id="user-header" class="w-full max-w-4xl flex justify-between items-center mb-6 p-4 bg-white rounded-xl shadow-sm border border-gray-100 hidden">
+    <div class="flex items-center space-x-3">
+        <div class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
+        <div class="flex flex-col">
+            <span class="text-xs text-gray-400 font-bold uppercase tracking-tighter">Authenticated User</span>
+            <span id="current-user-display" class="text-sm text-gray-800 font-bold"></span>
+        </div>
+    </div>
+    <button id="logout-btn" class="px-4 py-2 text-xs font-bold text-red-500 hover:bg-red-50 rounded-lg transition-all border border-red-100">
+        SIGN OUT
+    </button>
+</div>
+
+<div class="w-full max-w-4xl">
+    <header class="text-center mb-10">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">AMENSTECH GPA & CGPA Calculator</h1>
+        <p class="text-gray-500 mt-2">
+            Professional grade tracking with <strong>CGPAmax Predicting Formula (CPF)</strong>.
+        </p>
+    </header>
+
+    <!-- Data Saving Indicator -->
+    <div id="save-status" class="fixed bottom-4 right-4 bg-gray-900 text-white text-xs px-4 py-2 rounded-full shadow-2xl opacity-0 transition-opacity pointer-events-none z-50">
+        Cloud Sync Active...
+    </div>
+
+    <!-- Previous CGPA Input Card -->
+    <div class="mb-8">
+        <div class="p-6 bg-white rounded-xl card shadow-md border border-gray-100">
+            <h2 class="text-xl font-semibold mb-4 text-gray-700 flex items-center">
+                <span class="mr-2">📊</span> Previous Academic History
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="prev-cgpa" class="block text-sm font-medium text-gray-700 mb-1">Current CGPA (e.g., 3.85)</label>
+                    <input type="number" id="prev-cgpa" value="0.00" min="0" step="0.01" class="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                </div>
+                <div>
+                    <label for="prev-credits" class="block text-sm font-medium text-gray-700 mb-1">Total Earned Credits (TCU)</label>
+                    <input type="number" id="prev-credits" value="0" min="0" step="1" class="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Course Input Section -->
+    <div class="p-6 bg-white rounded-xl card shadow-md border border-gray-100">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Current Semester Courses</h2>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full">
+                <thead>
+                    <tr class="text-left text-xs font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                        <th class="px-3 py-3 w-1/3">Course Code</th>
+                        <th class="px-3 py-3 w-1/4 text-center">Unit/Credit</th>
+                        <th class="px-3 py-3 w-1/4 text-center">Grade</th>
+                        <th class="px-3 py-3 w-1/6 text-right"></th>
+                    </tr>
+                </thead>
+                <tbody id="course-list" class="divide-y divide-gray-50">
+                  <!-- JS will populate rows here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <button id="add-course-btn" class="w-full sm:w-auto px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-all flex items-center justify-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Add Course
+            </button>
+            <button id="calculate-btn" class="w-full sm:w-auto px-8 py-3 bg-emerald-600 text-white font-black rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all transform active:scale-95">
+                CALCULATE & SAVE
+            </button>
+        </div>
+    </div>
+    
+    <!-- Results Card -->
+    <div id="results-section" class="mt-8 hidden">
+        <div class="p-8 bg-emerald-900 text-white rounded-2xl shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10">
+                <svg width="100" height="100" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7h20L12 2zM2 7l10 5 10-5v10l-10 5-10-5V7z"/></svg>
+            </div>
+            <h2 class="text-2xl font-bold mb-6">Performance Summary</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white/10 p-6 rounded-2xl backdrop-blur-sm border border-white/10">
+                    <p class="text-xs font-bold uppercase tracking-widest text-emerald-300">Semester GPA</p>
+                    <p id="result-gpa" class="text-5xl font-black mt-2">0.00</p>
+                </div>
+                <div class="bg-white/10 p-6 rounded-2xl backdrop-blur-sm border border-white/10">
+                    <p class="text-xs font-bold uppercase tracking-widest text-emerald-300">New CGPA</p>
+                    <p id="result-cgpa" class="text-5xl font-black mt-2">0.00</p>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="bg-emerald-800/50 px-6 py-3 rounded-full border border-emerald-700">
+                    <span id="cgpa-classification" class="text-lg font-bold">First Class Honours</span>
+                </div>
+                <p id="calculation-details" class="text-sm font-medium opacity-70"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CPF Planner -->
+    <div class="mt-10 p-8 bg-white rounded-2xl card shadow-md border border-gray-100 mb-20">
+        <div class="flex items-center mb-4">
+            <h2 class="text-xl font-bold text-gray-800">Target Planner (CPF)</h2>
+            <span class="ml-3 px-2 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase rounded">Predictor</span>
+        </div>
+        <p class="text-sm text-gray-500 mb-6 leading-relaxed">The <strong>CGPAmax Predicting Formula</strong> shows your maximum possible final grade if you score perfect 5.0s for the rest of your degree.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="md:col-span-3">
+                <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Total Degree Credits (e.g., 120)</label>
+                <input type="number" id="total-program-credits" value="150" class="w-full p-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div class="flex items-end">
+                <button id="calculate-goal-btn" class="w-full py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100">
+                    Show Max
+                </button>
+            </div>
+        </div>
+        
+        <div id="goal-result" class="mt-6 p-6 border border-indigo-50 rounded-2xl bg-indigo-50/30 hidden">
+            <p id="required-gpa-display" class="text-indigo-900 font-bold text-center"></p>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/auth.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
