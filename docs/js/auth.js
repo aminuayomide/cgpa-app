@@ -104,7 +104,7 @@ onAuthStateChanged(auth, (user) => {
             console.log("Redirecting to index.html from:", path);
             // Using a short delay to allow success message to be briefly visible
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = 'dashboard.html';
             }, 800);
         }
     } else {
